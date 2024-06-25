@@ -1,3 +1,4 @@
+import json
 import httpx
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
@@ -8,10 +9,19 @@ from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
 import aioredis
 
-app = FastAPI()
+# Load configuration from config.json
+with open("config.json") as config_file:
+    config = json.load(config_file)
 
+DATABASE_URL = config["database_url"]
+REDIS_HOST = config["redis_host"]
+REDIS_PORT = config["redis_port"]
+REDIS_DB = config["redis_db"]
+EXCHANGE_API_URL = config["exchange_api_url"]
+CACHE_TIMEOUT = config["cache_timeout"]
 
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+# Initialize Redis client
+redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
 def get_db():
     db = SessionLocal()
@@ -45,7 +55,7 @@ async def fetch_and_store_rate(today, db):
     db.commit()
 
 # Endpoint - today's rate
-@app.get("/rate")
+@app.get("/rate") # type: ignore
 async def get_rate(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     today = date.today()
     rate = db.query(ExchangeRate).filter(ExchangeRate.date == today).first()
@@ -55,7 +65,7 @@ async def get_rate(background_tasks: BackgroundTasks, db: Session = Depends(get_
     return {"date": today, "usd_to_eur_rate": rate.usd_to_eur_rate}
 
 # Endpoint to get date range
-@app.get("/rate/average")
+@app.get("/rate/average") # type: ignore
 async def get_average_rate(start_date: str, end_date: str, db: Session = Depends(get_db)):
     try:
         start = datetime.strptime(start_date, "%Y-%m-%d").date()
@@ -71,12 +81,12 @@ async def get_average_rate(start_date: str, end_date: str, db: Session = Depends
     return {"start_date": start_date, "end_date": end_date, "average_usd_to_eur_rate": avg_rate}
 
 #Rate limiter
-@app.lifespan("startup")
+@app.lifespan("startup") # type: ignore
 async def startup():
     redis = await aioredis.create_redis_pool("redis://localhost")
     await FastAPILimiter.init(redis)
 
-@app.get("/rate", dependencies=[Depends(RateLimiter(times=5, seconds=60))])
+@app.get("/rate", dependencies=[Depends(RateLimiter(times=5, seconds=60))]) # type: ignore
 async def get_rate(db: Session = Depends(get_db)):
     # Endpoint
     today = date.today()
