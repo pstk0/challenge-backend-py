@@ -11,17 +11,13 @@ python -m venv venv
 source venv/bin/activate
 pip install fastapi uvicorn sqlalchemy pydantic requests httpx aioredis fastapi-limiter redis
 
-
-models.py
-Database Model
-Define the database model for storing exchange rates.
-
-
-main.py
-FastAPI Application with Frankfurter API Integration
-Create the main application file with endpoints and database session management.
-
-
-test_main.py
-Test the Endpoints
-Write tests using FastAPI's TestClient to ensure everything works seamlessly.
+currency_exchange_api/
+│
+├── venv/                   # Virtual environment (directory)
+│
+├── app/
+│   ├── main.py             # Main FastAPI application
+│   ├── models.py           # Database models
+│   └── test_main.py        # Test the Endpoints Write tests using FastAPI's (e.g., API fetch, caching)
+├── config.json             # Configuration file
+└── README.md               # Project README file
