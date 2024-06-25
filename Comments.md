@@ -2,6 +2,8 @@ Bash logs, commands & comments on files created to keep track of workflow and ho
 
 $ mkdir currency_exchange_api
 cd currency_exchange_api
+python -m venv venv
+source venv/bin/activate
 pip install fastapi uvicorn sqlalchemy pydantic requests httpx aioredis fastapi-limiter redis
 
 
