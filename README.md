@@ -11,13 +11,15 @@ python -m venv venv
 source venv/bin/activate
 pip install fastapi uvicorn sqlalchemy pydantic requests httpx aioredis fastapi-limiter redis
 
+```bash
 currency_exchange_api/
 │
-├── venv/                   # Virtual environment (directory)
+├── venv/                   # Virtual environment (directory)<
 │
 ├── app/
 │   ├── main.py             # Main FastAPI application
-│   ├── models.py           # Database models
+│   ├── models.py           # Database models<p>
 │   └── test_main.py        # Test the Endpoints Write tests using FastAPI's (e.g., API fetch, caching)
 ├── config.json             # Configuration file
 └── README.md               # Project README file
+```
